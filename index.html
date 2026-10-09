@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="PulseFit - Comprehensive Health, Fitness & Nutrition Tracker with BMI Calculator, Macro Logging, Hydration, and Activity Analytics." />
+  <title>PulseFit — All-in-One Health, Nutrition & BMI Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2.2'><path d='M22 12h-4l-3 9L9 3l-3 9H2'/></svg>">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="app-background-glow glow-1"></div>
+  <div class="app-background-glow glow-2"></div>
+  <div class="app-background-glow glow-3"></div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Pulse<span>Fit</span></h1>
+          <p class="brand-subtitle">Health & Nutrition Command Center</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- Date Selector -->
+        <div class="date-navigator">
+          <button id="prev-day-btn" class="icon-btn" title="Previous Day" aria-label="Previous Day">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div class="date-display-wrapper">
+            <input type="date" id="selected-date-input" class="hidden-date-picker" />
+            <button id="date-display-btn" class="date-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <span id="date-label">Today</span>
+            </button>
+          </div>
+          <button id="next-day-btn" class="icon-btn" title="Next Day" aria-label="Next Day">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+
+        <button id="open-goals-modal-btn" class="action-btn secondary-btn" title="Set Daily Goals">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+          <span>Goals</span>
+        </button>
+
+        <button id="toggle-sound-btn" class="icon-btn" title="Toggle Sound Feedback" aria-label="Toggle Sound">
+          <svg id="sound-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+          </svg>
+          <svg id="sound-icon-off" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab active" data-tab="dashboard-tab" role="tab" aria-selected="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="9" />
+          <rect x="14" y="3" width="7" height="5" />
+          <rect x="14" y="12" width="7" height="9" />
+          <rect x="3" y="16" width="7" height="5" />
+        </svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-tab" data-tab="bmi-tab" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+          <line x1="16" y1="8" x2="2" y2="22" />
+          <line x1="17.5" y1="15" x2="9" y2="15" />
+        </svg>
+        <span>BMI Calculator</span>
+      </button>
+      <button class="nav-tab" data-tab="analytics-tab" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10" />
+          <line x1="12" y1="20" x2="12" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="14" />
+        </svg>
+        <span>Weekly Trends</span>
+      </button>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+
+      <!-- ================= TAB 1: DASHBOARD ================= -->
+      <section id="dashboard-tab" class="tab-content active">
+        <!-- Daily Goal Summary Banner -->
+        <div class="summary-hero-card">
+          <div class="hero-left">
+            <span class="hero-tag">Daily Performance</span>
+            <h2 class="hero-title" id="greeting-title">Keep up the momentum!</h2>
+            <p class="hero-desc" id="summary-phrase">You're making solid progress toward your daily health targets.</p>
+            <div class="quick-status-badges">
+              <div class="badge-item" id="badge-steps">
+                <span class="badge-dot"></span> Steps: <strong id="hero-steps-text">0 / 10,000</strong>
+              </div>
+              <div class="badge-item" id="badge-water">
+                <span class="badge-dot"></span> Water: <strong id="hero-water-text">0 / 2500 ml</strong>
+              </div>
+              <div class="badge-item" id="badge-cals">
+                <span class="badge-dot"></span> Calories: <strong id="hero-cals-text">0 / 2200 kcal</strong>
+              </div>
+              <div class="badge-item" id="badge-protein">
+                <span class="badge-dot"></span> Protein: <strong id="hero-protein-text">0 / 120 g</strong>
+              </div>
+            </div>
+          </div>
+          <div class="hero-ring-container">
+            <div class="overall-ring-wrap" id="hero-ring-wrapper">
+              <svg class="overall-ring-svg" viewBox="0 0 160 160" aria-hidden="true">
+                <defs>
+                  <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#38bdf8" />
+                    <stop offset="50%" stop-color="#818cf8" />
+                    <stop offset="100%" stop-color="#10b981" />
+                  </linearGradient>
+                </defs>
+                <circle class="ring-bg" cx="80" cy="80" r="66"></circle>
+                <circle class="ring-progress" id="hero-overall-ring" cx="80" cy="80" r="66"></circle>
+              </svg>
+              <div class="ring-inner-text">
+                <span class="ring-percentage" id="hero-overall-pct">0%</span>
+                <span class="ring-label">Goals Met</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Core Pillars Grid -->
+        <div class="tracker-grid">
+
+          <!-- 1. STEP COUNTER CARD -->
+          <div class="tracker-card card-steps">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon step-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M4 16v-2.38C4 11.5 5.5 10 7.38 10h.24C9.5 10 11 11.5 11 13.38V16" />
+                    <path d="M13 20v-2.38C13 15.5 14.5 14 16.38 14h.24C18.5 14 20 15.5 20 17.38V20" />
+                    <circle cx="7.5" cy="5.5" r="2.5" />
+                    <circle cx="16.5" cy="9.5" r="2.5" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="card-title">Daily Steps</h3>
+                  <span class="card-meta">Movement & Energy</span>
+                </div>
+              </div>
+              <div class="card-stat-pill" id="steps-pct-pill">0%</div>
+            </div>
+
+            <div class="metric-visual-center">
+              <div class="metric-main-val">
+                <div class="counter-stepper-wrap">
+                  <button class="count-stepper-btn" onclick="app.adjustSteps(-500)" title="Decrease 500 steps"
+                    aria-label="Decrease 500 steps">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                  </button>
+                  <span class="value-huge" id="steps-count-display">0</span>
+                  <button class="count-stepper-btn" onclick="app.adjustSteps(500)" title="Increase 500 steps"
+                    aria-label="Increase 500 steps">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                  </button>
+                </div>
+                <span class="value-unit">/ <span id="steps-goal-display">10,000</span> steps</span>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill steps-fill" id="steps-progress-bar" style="width: 0%;"></div>
+              </div>
+              <div class="metric-sub-stats">
+                <div class="sub-stat">
+                  <span class="sub-stat-label">Est. Distance</span>
+                  <span class="sub-stat-val" id="steps-km-display">0.0 km</span>
+                </div>
+                <div class="sub-stat">
+                  <span class="sub-stat-label">Active Burn</span>
+                  <span class="sub-stat-val" id="steps-kcal-display">0 kcal</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-quick-actions">
+              <span class="quick-label">Adjust Steps (Dec / Inc):</span>
+              <div class="btn-group-chips">
+                <button class="quick-chip minus-chip" onclick="app.adjustSteps(-1000)">−1,000</button>
+                <button class="quick-chip minus-chip" onclick="app.adjustSteps(-500)">−500</button>
+                <button class="quick-chip plus-chip" onclick="app.adjustSteps(500)">+500</button>
+                <button class="quick-chip plus-chip" onclick="app.adjustSteps(1000)">+1,000</button>
+                <button class="quick-chip plus-chip" onclick="app.adjustSteps(2500)">+2,500</button>
+                <button class="quick-chip custom-trigger" onclick="app.promptCustomSteps()">±Custom</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. WATER CONSUMPTION CARD -->
+          <div class="tracker-card card-water">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon water-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="card-title">Hydration Tracker</h3>
+                  <span class="card-meta">Optimal Fluid Intake</span>
+                </div>
+              </div>
+              <div class="card-stat-pill" id="water-pct-pill">0%</div>
+            </div>
+
+            <div class="water-interactive-container">
+              <div class="water-cup-graphic">
+                <div class="water-liquid" id="water-cup-fill" style="height: 0%;">
+                  <div class="water-wave"></div>
+                </div>
+                <div class="cup-glass-glare"></div>
+              </div>
+              <div class="water-readout">
+                <div class="metric-main-val">
+                  <div class="counter-stepper-wrap">
+                    <button class="count-stepper-btn" onclick="app.adjustWater(-250)" title="Decrease 250 ml"
+                      aria-label="Decrease 250 ml">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                    </button>
+                    <span class="value-huge" id="water-count-display">0</span>
+                    <button class="count-stepper-btn" onclick="app.adjustWater(250)" title="Increase 250 ml"
+                      aria-label="Increase 250 ml">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <span class="value-unit">/ <span id="water-goal-display">2500</span> ml</span>
+                </div>
+                <p class="water-hint" id="water-cups-left">10 glasses (250ml) remaining</p>
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill water-fill" id="water-progress-bar" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-quick-actions">
+              <span class="quick-label">Adjust Fluid (Dec / Inc):</span>
+              <div class="btn-group-chips">
+                <button class="quick-chip minus-chip" onclick="app.adjustWater(-500)">−500 ml</button>
+                <button class="quick-chip minus-chip" onclick="app.adjustWater(-250)">−250 ml</button>
+                <button class="quick-chip plus-chip water-chip" onclick="app.adjustWater(250)">
+                  <span>💧</span> +250 ml
+                </button>
+                <button class="quick-chip plus-chip water-chip" onclick="app.adjustWater(500)">
+                  <span>🫗</span> +500 ml
+                </button>
+                <button class="quick-chip plus-chip water-chip" onclick="app.adjustWater(750)">
+                  <span>🍶</span> +750 ml
+                </button>
+                <button class="quick-chip custom-trigger" onclick="app.promptCustomWater()">±Custom</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. NUTRITION: CALORIES & PROTEIN CARD -->
+          <div class="tracker-card card-nutrition">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon nutrition-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                    <line x1="6" y1="1" x2="6" y2="4" />
+                    <line x1="10" y1="1" x2="10" y2="4" />
+                    <line x1="14" y1="1" x2="14" y2="4" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="card-title">Calories & Protein</h3>
+                  <span class="card-meta">Daily Fuel & Recovery</span>
+                </div>
+              </div>
+              <div class="card-actions-group">
+                <button class="action-btn small-btn secondary-btn" onclick="app.scrollToAdvisor()" title="View BMI Recommended Targets">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                  <span>BMI Targets</span>
+                </button>
+                <button class="action-btn small-btn primary-btn" onclick="app.openMealModal()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  <span>Add Food</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Calorie & Protein Dual Progress Bars with Steppers -->
+            <div class="nutrition-dual-bars">
+              <!-- Calories Bar -->
+              <div class="macro-bar-block">
+                <div class="macro-header-row">
+                  <span class="macro-label">🔥 Calories</span>
+                  <div class="macro-counter-with-steppers">
+                    <button class="mini-stepper-btn" onclick="app.adjustCalories(-100)" title="Decrease 100 kcal">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                    </button>
+                    <span class="macro-numbers"><strong id="cal-count-display">0</strong> / <span
+                        id="cal-goal-display">2,200</span> kcal</span>
+                    <button class="mini-stepper-btn" onclick="app.adjustCalories(100)" title="Increase 100 kcal">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill cal-fill" id="cal-progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="macro-remaining" id="cal-remaining-display">2,200 kcal remaining</div>
+              </div>
+
+              <!-- Protein Bar -->
+              <div class="macro-bar-block">
+                <div class="macro-header-row">
+                  <span class="macro-label">🥩 Protein</span>
+                  <div class="macro-counter-with-steppers">
+                    <button class="mini-stepper-btn" onclick="app.adjustProtein(-5)" title="Decrease 5g protein">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                    </button>
+                    <span class="macro-numbers"><strong id="protein-count-display">0</strong> / <span
+                        id="protein-goal-display">120</span> g</span>
+                    <button class="mini-stepper-btn" onclick="app.adjustProtein(5)" title="Increase 5g protein">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill protein-fill" id="protein-progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="macro-remaining" id="protein-remaining-display">120 g remaining</div>
+              </div>
+
+              <!-- Macro Quick Adjust Row -->
+              <div class="macro-quick-steppers-row">
+                <span class="quick-label">Quick Adjust:</span>
+                <div class="btn-group-chips">
+                  <button class="quick-chip minus-chip" onclick="app.adjustCalories(-100)">−100 kcal</button>
+                  <button class="quick-chip plus-chip" onclick="app.adjustCalories(100)">+100 kcal</button>
+                  <button class="quick-chip minus-chip" onclick="app.adjustProtein(-10)">−10g Prot</button>
+                  <button class="quick-chip plus-chip" onclick="app.adjustProtein(10)">+10g Prot</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Food Entries List -->
+            <div class="logged-items-section">
+              <div class="logged-items-header">
+                <span class="subhead">Logged Today (<span id="meal-count-pill">0</span> items)</span>
+              </div>
+              <div class="meal-list-scrollable" id="meal-list-container">
+                <div class="empty-state">No meals logged yet today. Click "Add Food" above.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. WORKOUT & ACTIVITY CARD -->
+          <div class="tracker-card card-workout">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon workout-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M6 5v14M18 5v14M2 9v6M22 9v6M6 12h12" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="card-title">Daily Workouts</h3>
+                  <span class="card-meta">Training & Conditioning</span>
+                </div>
+              </div>
+              <button class="action-btn small-btn primary-btn" onclick="app.openWorkoutModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span>Log Workout</span>
+              </button>
+            </div>
+
+            <!-- Workout Stats Overview with Duration Stepper -->
+            <div class="workout-overview-row">
+              <div class="workout-stat-tile">
+                <span class="tile-label">Duration</span>
+                <div class="tile-val-stepper">
+                  <button class="mini-stepper-btn" onclick="app.adjustWorkoutDuration(-5)" title="Decrease 5 mins">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                  </button>
+                  <span class="tile-val"><span id="workout-total-minutes">0</span> <small>mins</small></span>
+                  <button class="mini-stepper-btn" onclick="app.adjustWorkoutDuration(5)" title="Increase 5 mins">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                  </button>
+                </div>
+                <span class="tile-meta" id="workout-minutes-goal-meta">Target: 45m</span>
+              </div>
+              <div class="workout-stat-tile">
+                <span class="tile-label">Workout Burn</span>
+                <span class="tile-val"><span id="workout-total-calories">0</span> <small>kcal</small></span>
+                <span class="tile-meta">Active session</span>
+              </div>
+              <div class="workout-stat-tile">
+                <span class="tile-label">Sessions</span>
+                <span class="tile-val"><span id="workout-total-sessions">0</span></span>
+                <span class="tile-meta">Completed</span>
+              </div>
+            </div>
+
+            <!-- Workout Quick Steppers Row -->
+            <div class="workout-quick-steppers-row">
+              <span class="quick-label">Adjust Active Time:</span>
+              <div class="btn-group-chips">
+                <button class="quick-chip minus-chip" onclick="app.adjustWorkoutDuration(-15)">−15m</button>
+                <button class="quick-chip minus-chip" onclick="app.adjustWorkoutDuration(-5)">−5m</button>
+                <button class="quick-chip plus-chip" onclick="app.adjustWorkoutDuration(5)">+5m</button>
+                <button class="quick-chip plus-chip" onclick="app.adjustWorkoutDuration(15)">+15m</button>
+                <button class="quick-chip plus-chip" onclick="app.adjustWorkoutDuration(30)">+30m</button>
+              </div>
+            </div>
+
+            <!-- Workout Progress Bar -->
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill workout-fill" id="workout-progress-bar" style="width: 0%;"></div>
+            </div>
+
+            <!-- Workout Entries List -->
+            <div class="logged-items-section">
+              <div class="logged-items-header">
+                <span class="subhead">Session History</span>
+              </div>
+              <div class="workout-list-scrollable" id="workout-list-container">
+                <div class="empty-state">No workouts logged today. Time to get moving!</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. BMI NUTRITION TARGET ADVISOR (WEIGHT LOSS & GAIN) -->
+          <div class="tracker-card card-bmi-advisor" id="card-bmi-advisor">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon advisor-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="card-title">BMI Nutrition Target Advisor</h3>
+                  <span class="card-meta">Smart Calorie & Protein Intake for Weight Loss, Maintenance & Gain</span>
+                </div>
+              </div>
+              <div class="card-stat-pill advisor-bmi-pill" id="advisor-bmi-badge">BMI 22.9 • Normal</div>
+            </div>
+
+            <!-- Goal Segmented Switcher -->
+            <div class="advisor-goal-section">
+              <div class="advisor-segmented-control" role="tablist">
+                <button type="button" class="advisor-goal-btn active" id="goal-btn-loss" onclick="app.setAdvisorGoal('loss')">
+                  <span class="goal-icon">🔻</span>
+                  <span class="goal-text">
+                    <strong>Weight Loss</strong>
+                    <small>Fat Burn Deficit</small>
+                  </span>
+                </button>
+                <button type="button" class="advisor-goal-btn" id="goal-btn-maintain" onclick="app.setAdvisorGoal('maintain')">
+                  <span class="goal-icon">⚖️</span>
+                  <span class="goal-text">
+                    <strong>Maintain Weight</strong>
+                    <small>Energy Balance</small>
+                  </span>
+                </button>
+                <button type="button" class="advisor-goal-btn" id="goal-btn-gain" onclick="app.setAdvisorGoal('gain')">
+                  <span class="goal-icon">🔺</span>
+                  <span class="goal-text">
+                    <strong>Weight Gain</strong>
+                    <small>Muscle Surplus</small>
+                  </span>
+                </button>
+              </div>
+
+              <!-- Pace & Intensity Selector -->
+              <div class="advisor-pace-container" id="advisor-pace-wrap">
+                <span class="pace-label">Target Pace:</span>
+                <div class="pace-pill-group">
+                  <button type="button" class="pace-btn" id="pace-mild-btn" onclick="app.setAdvisorPace('mild')">
+                    <span>🐢 Mild</span>
+                    <small id="pace-mild-sub">-250 kcal/d</small>
+                  </button>
+                  <button type="button" class="pace-btn active" id="pace-standard-btn" onclick="app.setAdvisorPace('standard')">
+                    <span>⚡ Standard (Recommended)</span>
+                    <small id="pace-standard-sub">-500 kcal/d (~0.5kg/wk)</small>
+                  </button>
+                  <button type="button" class="pace-btn" id="pace-aggressive-btn" onclick="app.setAdvisorPace('aggressive')">
+                    <span>🔥 Aggressive</span>
+                    <small id="pace-aggressive-sub">-750 kcal/d</small>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Profile Parameter Bar -->
+            <div class="advisor-profile-bar">
+              <div class="profile-input-item">
+                <label for="advisor-gender">Sex</label>
+                <select id="advisor-gender" class="advisor-mini-select" onchange="app.onAdvisorProfileInput()">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              <div class="profile-input-item">
+                <label for="advisor-age">Age</label>
+                <input type="number" id="advisor-age" class="advisor-mini-input" min="10" max="120" value="25" onchange="app.onAdvisorProfileInput()" />
+              </div>
+              <div class="profile-input-item">
+                <label for="advisor-height">Height (cm)</label>
+                <input type="number" id="advisor-height" class="advisor-mini-input" min="80" max="250" value="175" onchange="app.onAdvisorProfileInput()" />
+              </div>
+              <div class="profile-input-item">
+                <label for="advisor-weight">Weight (kg)</label>
+                <input type="number" id="advisor-weight" class="advisor-mini-input" min="20" max="300" step="0.5" value="70" onchange="app.onAdvisorProfileInput()" />
+              </div>
+              <div class="profile-input-item activity-item">
+                <label for="advisor-activity">Activity Level</label>
+                <select id="advisor-activity" class="advisor-mini-select" onchange="app.onAdvisorProfileInput()">
+                  <option value="1.2">Sedentary (Desk job / little exercise)</option>
+                  <option value="1.375" selected>Lightly Active (Exercise 1-3 d/wk)</option>
+                  <option value="1.55">Moderately Active (Exercise 3-5 d/wk)</option>
+                  <option value="1.725">Very Active (Hard exercise 6-7 d/wk)</option>
+                  <option value="1.9">Extra Active (Athletic / physical job)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Target Recommendations Display Cards -->
+            <div class="advisor-results-grid">
+              <!-- Recommended Calories Card -->
+              <div class="advisor-result-card card-cal-result">
+                <div class="result-card-top">
+                  <span class="result-badge-tag tag-cal">🔥 Target Calories</span>
+                  <span class="result-rate-tag" id="advisor-rate-tag">~0.5 kg / week</span>
+                </div>
+                <div class="result-value-row">
+                  <span class="result-number" id="advisor-cal-val">1,810</span>
+                  <span class="result-unit">kcal / day</span>
+                </div>
+                <div class="result-sub-info">
+                  <span id="advisor-cal-delta-text">−500 kcal deficit</span>
+                  <span class="dot-sep">•</span>
+                  <span id="advisor-tdee-ref-text">TDEE: 2,310 kcal</span>
+                </div>
+              </div>
+
+              <!-- Recommended Protein Card -->
+              <div class="advisor-result-card card-protein-result">
+                <div class="result-card-top">
+                  <span class="result-badge-tag tag-protein">🥩 Target Protein</span>
+                  <span class="result-rate-tag" id="advisor-protein-ratio-tag">2.0 g / kg</span>
+                </div>
+                <div class="result-value-row">
+                  <span class="result-number" id="advisor-protein-val">140</span>
+                  <span class="result-unit">g / day</span>
+                </div>
+                <div class="result-sub-info">
+                  <span id="advisor-protein-kcal-text">560 kcal (31% of total)</span>
+                  <span class="dot-sep">•</span>
+                  <span id="advisor-protein-rationale">Preserves lean muscle</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Macro Distribution Progress Bar -->
+            <div class="advisor-macro-breakdown">
+              <div class="macro-breakdown-header">
+                <span class="breakdown-title">Optimal Macro Distribution</span>
+                <div class="macro-chips-legend">
+                  <span class="legend-chip leg-protein"><span class="chip-color"></span> Protein: <strong id="advisor-macro-prot">140g (31%)</strong></span>
+                  <span class="legend-chip leg-carbs"><span class="chip-color"></span> Carbs: <strong id="advisor-macro-carbs">185g (41%)</strong></span>
+                  <span class="legend-chip leg-fats"><span class="chip-color"></span> Healthy Fats: <strong id="advisor-macro-fats">57g (28%)</strong></span>
+                </div>
+              </div>
+              <div class="macro-stacked-bar">
+                <div class="macro-segment seg-protein" id="macro-seg-protein" style="width: 31%;" title="Protein"></div>
+                <div class="macro-segment seg-carbs" id="macro-seg-carbs" style="width: 41%;" title="Carbs"></div>
+                <div class="macro-segment seg-fats" id="macro-seg-fats" style="width: 28%;" title="Fats"></div>
+              </div>
+            </div>
+
+            <!-- Dynamic Scientific Guidance Note -->
+            <div class="advisor-guidance-box" id="advisor-guidance-box">
+              <div class="guidance-icon">💡</div>
+              <div class="guidance-content">
+                <h4 id="advisor-guidance-title">Personalized Weight Loss Strategy</h4>
+                <p id="advisor-guidance-text">Based on your BMI of 22.9, a 500 kcal deficit targets steady fat loss (~0.5 kg/week). High protein (2.0g/kg) is recommended to prevent muscle catabolism while eating in a caloric deficit.</p>
+              </div>
+            </div>
+
+            <!-- Card Actions -->
+            <div class="advisor-actions-row">
+              <button type="button" class="action-btn primary-btn pulse-glow-btn" onclick="app.applyAdvisorGoals()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span>Apply as Today's Daily Goals</span>
+              </button>
+              <button type="button" class="action-btn secondary-btn" onclick="app.switchToBmiTab()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+                  <line x1="16" y1="8" x2="2" y2="22" />
+                  <line x1="17.5" y1="15" x2="9" y2="15" />
+                </svg>
+                <span>Full BMI Calculator</span>
+              </button>
+            </div>
+          </div>
+
+        </div> <!-- /tracker-grid -->
+
+        <!-- Quick Summary Bar at Bottom -->
+        <div class="net-energy-card">
+          <div class="net-energy-info">
+            <span class="net-tag">Daily Energy Balance</span>
+            <h4>Total Calories Burned vs Consumed</h4>
+            <p>Steps Burn (<span id="net-step-burn">0</span> kcal) + Workouts (<span id="net-workout-burn">0</span>
+              kcal) = <strong><span id="net-total-burn">0</span> kcal total burned</strong> vs <strong><span
+                  id="net-consumed">0</span> kcal consumed</strong>.</p>
+          </div>
+          <div class="net-energy-badge" id="net-energy-status">
+            Balanced
+          </div>
+        </div>
+
+      </section> <!-- /dashboard-tab -->
+
+
+      <!-- ================= TAB 2: BMI CALCULATOR ================= -->
+      <section id="bmi-tab" class="tab-content">
+        <div class="bmi-layout">
+          <!-- Left: Input form -->
+          <div class="bmi-form-card">
+            <div class="bmi-card-header">
+              <div class="card-icon bmi-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z" />
+                  <line x1="9" y1="9" x2="15" y2="15" />
+                  <line x1="15" y1="9" x2="9" y2="15" />
+                </svg>
+              </div>
+              <div>
+                <h2>Body Mass Index (BMI) Calculator</h2>
+                <p class="card-meta">Scientifically calculate your BMI, healthy weight range & body composition.</p>
+              </div>
+            </div>
+
+            <!-- Unit Switcher -->
+            <div class="unit-toggle-group">
+              <span class="unit-label">Measurement System:</span>
+              <div class="unit-pill-selector">
+                <button type="button" id="unit-metric-btn" class="unit-btn active"
+                  onclick="app.setBmiUnit('metric')">Metric (cm, kg)</button>
+                <button type="button" id="unit-imperial-btn" class="unit-btn"
+                  onclick="app.setBmiUnit('imperial')">Imperial (ft/in, lbs)</button>
+              </div>
+            </div>
+
+            <form id="bmi-calculator-form" onsubmit="event.preventDefault(); app.calculateBMI();">
+              <!-- Gender & Age -->
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label for="bmi-gender">Biological Sex</label>
+                  <select id="bmi-gender" class="form-input">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="bmi-age">Age (years)</label>
+                  <input type="number" id="bmi-age" class="form-input" min="10" max="120" value="25" required />
+                </div>
+              </div>
+
+              <!-- Metric Height/Weight Inputs -->
+              <div id="metric-inputs-group">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="bmi-height-cm">Height (cm)</label>
+                    <div class="input-with-adornment">
+                      <input type="number" id="bmi-height-cm" class="form-input" min="80" max="250" step="0.5"
+                        value="175" placeholder="175" />
+                      <span class="adornment">cm</span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="bmi-weight-kg">Weight (kg)</label>
+                    <div class="input-with-adornment">
+                      <input type="number" id="bmi-weight-kg" class="form-input" min="20" max="300" step="0.2"
+                        value="70" placeholder="70" />
+                      <span class="adornment">kg</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Imperial Height/Weight Inputs -->
+              <div id="imperial-inputs-group" class="hidden">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label>Height (Feet & Inches)</label>
+                    <div class="split-inputs">
+                      <div class="input-with-adornment">
+                        <input type="number" id="bmi-height-ft" class="form-input" min="2" max="8" value="5"
+                          placeholder="5" />
+                        <span class="adornment">ft</span>
+                      </div>
+                      <div class="input-with-adornment">
+                        <input type="number" id="bmi-height-in" class="form-input" min="0" max="11" value="9"
+                          placeholder="9" />
+                        <span class="adornment">in</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="bmi-weight-lbs">Weight (lbs)</label>
+                    <div class="input-with-adornment">
+                      <input type="number" id="bmi-weight-lbs" class="form-input" min="40" max="700" step="0.5"
+                        value="154" placeholder="154" />
+                      <span class="adornment">lbs</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity Level -->
+              <div class="form-group">
+                <label for="bmi-activity">Daily Activity Level</label>
+                <select id="bmi-activity" class="form-input">
+                  <option value="1.2">Sedentary (Little or no exercise)</option>
+                  <option value="1.375" selected>Lightly active (Exercise 1-3 days/week)</option>
+                  <option value="1.55">Moderately active (Exercise 3-5 days/week)</option>
+                  <option value="1.725">Very active (Hard exercise 6-7 days/week)</option>
+                  <option value="1.9">Extra active (Very hard exercise & physical job)</option>
+                </select>
+              </div>
+
+              <div class="bmi-btn-row">
+                <button type="submit" class="action-btn primary-btn full-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                  </svg>
+                  <span>Compute BMI & Insights</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Right: BMI Results & Gauge Card -->
+          <div class="bmi-result-card" id="bmi-result-card">
+            <div class="result-header">
+              <h3>BMI Assessment Result</h3>
+              <span class="bmi-badge normal" id="bmi-category-badge">Normal Weight</span>
+            </div>
+
+            <div class="bmi-score-showcase">
+              <div class="bmi-number-circle" id="bmi-circle-wrap">
+                <span class="bmi-number-value" id="bmi-value-display">22.9</span>
+                <span class="bmi-unit-sub">kg/m²</span>
+              </div>
+              <div class="bmi-classification-text">
+                <h4 id="bmi-category-title">Optimal Healthy Range</h4>
+                <p id="bmi-category-advice">Your BMI is within the healthy zone recommended by the World Health
+                  Organization (WHO).</p>
+              </div>
+            </div>
+
+            <!-- Colorful BMI Gauge Bar -->
+            <div class="bmi-gauge-wrap">
+              <div class="bmi-scale-bar">
+                <div class="scale-section sec-under" title="Underweight (< 18.5)"></div>
+                <div class="scale-section sec-normal" title="Normal (18.5 - 24.9)"></div>
+                <div class="scale-section sec-over" title="Overweight (25 - 29.9)"></div>
+                <div class="scale-section sec-obese" title="Obese (≥ 30)"></div>
+              </div>
+              <div class="bmi-gauge-needle" id="bmi-gauge-needle" style="left: 36%;">
+                <div class="needle-pointer"></div>
+                <div class="needle-label" id="needle-score-label">22.9</div>
+              </div>
+              <div class="scale-labels">
+                <span>16.0</span>
+                <span>18.5</span>
+                <span>25.0</span>
+                <span>30.0</span>
+                <span>40.0</span>
+              </div>
+            </div>
+
+            <!-- Personalized Health Analytics -->
+            <div class="bmi-metrics-grid">
+              <div class="bmi-metric-item">
+                <span class="metric-tag">Ideal Weight Range</span>
+                <strong id="bmi-ideal-weight">56.7 – 76.3 kg</strong>
+                <small>For your height</small>
+              </div>
+              <div class="bmi-metric-item">
+                <span class="metric-tag">Estimated BMR</span>
+                <strong id="bmi-bmr-display">1,680 kcal</strong>
+                <small>Basal Metabolic Rate</small>
+              </div>
+              <div class="bmi-metric-item">
+                <span class="metric-tag">Daily Maintenance (TDEE)</span>
+                <strong id="bmi-tdee-display">2,310 kcal</strong>
+                <small>To maintain weight</small>
+              </div>
+              <div class="bmi-metric-item">
+                <span class="metric-tag">Recommended Protein</span>
+                <strong id="bmi-recommended-protein">112 – 140 g</strong>
+                <small>Based on body weight</small>
+              </div>
+            </div>
+
+            <div class="apply-goals-card">
+              <p>Would you like to sync your daily calorie & protein goals with these personalized recommendations?</p>
+              <button class="action-btn secondary-btn" onclick="app.applyBmiRecommendations()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span>Apply to Daily Goals</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </section> <!-- /bmi-tab -->
+
+
+      <!-- ================= TAB 3: WEEKLY TRENDS & ANALYTICS ================= -->
+      <section id="analytics-tab" class="tab-content">
+        <div class="analytics-header">
+          <div>
+            <h2>7-Day Performance & Trends</h2>
+            <p class="card-meta">Track your weekly consistency and habit evolution over time.</p>
+          </div>
+          <div class="analytics-quick-stats">
+            <div class="stat-pill">
+              <span>Avg Steps:</span> <strong id="avg-weekly-steps">0</strong>
+            </div>
+            <div class="stat-pill">
+              <span>Avg Water:</span> <strong id="avg-weekly-water">0 ml</strong>
+            </div>
+            <div class="stat-pill">
+              <span>Avg Calories:</span> <strong id="avg-weekly-cals">0 kcal</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="analytics-charts-grid">
+          <!-- Steps Trend Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title-wrap">
+                <span class="chart-dot dot-steps"></span>
+                <h3>Step Count Trend</h3>
+              </div>
+              <span class="chart-meta">Goal: <span id="trend-steps-goal">10,000</span></span>
+            </div>
+            <div class="canvas-chart-box">
+              <canvas id="steps-trend-canvas" width="500" height="240"></canvas>
+            </div>
+          </div>
+
+          <!-- Water Trend Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title-wrap">
+                <span class="chart-dot dot-water"></span>
+                <h3>Water Consumption (ml)</h3>
+              </div>
+              <span class="chart-meta">Goal: <span id="trend-water-goal">2,500 ml</span></span>
+            </div>
+            <div class="canvas-chart-box">
+              <canvas id="water-trend-canvas" width="500" height="240"></canvas>
+            </div>
+          </div>
+
+          <!-- Nutrition Trend Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title-wrap">
+                <span class="chart-dot dot-cal"></span>
+                <h3>Caloric & Protein Intake</h3>
+              </div>
+              <span class="chart-meta">Daily Totals</span>
+            </div>
+            <div class="canvas-chart-box">
+              <canvas id="nutrition-trend-canvas" width="500" height="240"></canvas>
+            </div>
+          </div>
+
+          <!-- Workout Minutes Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title-wrap">
+                <span class="chart-dot dot-workout"></span>
+                <h3>Workout Duration (Mins)</h3>
+              </div>
+              <span class="chart-meta">Active Minutes</span>
+            </div>
+            <div class="canvas-chart-box">
+              <canvas id="workout-trend-canvas" width="500" height="240"></canvas>
+            </div>
+          </div>
+        </div>
+      </section> <!-- /analytics-tab -->
+
+      <!-- Interactive Chart Tooltip -->
+      <div id="chart-tooltip" class="chart-tooltip hidden" aria-hidden="true"></div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>PulseFit Health OS • Precision Tracking for Peak Vitality</p>
+      <div class="footer-links">
+        <button class="footer-link-btn" onclick="app.seedSampleData()">Populate Demo Week</button>
+        <span class="dot-separator">•</span>
+        <button class="footer-link-btn text-danger" onclick="app.resetAllData()">Reset All Data</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- 1. FOOD / MEAL MODAL -->
+  <div id="meal-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="meal-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="meal-modal-title">Log Meal / Snack</h3>
+        <button class="modal-close-btn" onclick="app.closeMealModal()">&times;</button>
+      </div>
+      <form id="meal-form" onsubmit="event.preventDefault(); app.saveMealEntry();">
+        <div class="form-group">
+          <label for="meal-name">Food or Meal Name</label>
+          <input type="text" id="meal-name" class="form-input" placeholder="e.g. Grilled Chicken Salad & Quinoa"
+            required />
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="meal-calories">Calories (kcal)</label>
+            <input type="number" id="meal-calories" class="form-input" min="0" max="5000" placeholder="e.g. 450"
+              required />
+          </div>
+          <div class="form-group">
+            <label for="meal-protein">Protein (grams)</label>
+            <input type="number" id="meal-protein" class="form-input" min="0" max="300" step="0.5" placeholder="e.g. 35"
+              required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="meal-type">Meal Category</label>
+          <select id="meal-type" class="form-input">
+            <option value="Breakfast">Breakfast</option>
+            <option value="Lunch" selected>Lunch</option>
+            <option value="Dinner">Dinner</option>
+            <option value="Snack">Snack / Shake</option>
+          </select>
+        </div>
+
+        <!-- Quick Presets -->
+        <div class="form-presets">
+          <span class="preset-label">Quick Presets:</span>
+          <div class="preset-chips">
+            <button type="button" class="preset-chip"
+              onclick="app.fillMealPreset('Whey Protein Shake', 140, 25, 'Snack')">Protein Shake (25g P)</button>
+            <button type="button" class="preset-chip"
+              onclick="app.fillMealPreset('3 Boiled Eggs & Toast', 280, 20, 'Breakfast')">Eggs & Toast (20g P)</button>
+            <button type="button" class="preset-chip"
+              onclick="app.fillMealPreset('Chicken Breast & Rice', 520, 48, 'Lunch')">Chicken & Rice (48g P)</button>
+            <button type="button" class="preset-chip"
+              onclick="app.fillMealPreset('Greek Yogurt & Berries', 180, 18, 'Snack')">Greek Yogurt (18g P)</button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="action-btn secondary-btn" onclick="app.closeMealModal()">Cancel</button>
+          <button type="submit" class="action-btn primary-btn">Save Food Entry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. WORKOUT MODAL -->
+  <div id="workout-modal" class="modal-overlay hidden" role="dialog" aria-modal="true"
+    aria-labelledby="workout-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="workout-modal-title">Log Workout Activity</h3>
+        <button class="modal-close-btn" onclick="app.closeWorkoutModal()">&times;</button>
+      </div>
+      <form id="workout-form" onsubmit="event.preventDefault(); app.saveWorkoutEntry();">
+        <div class="form-group">
+          <label for="workout-type">Activity Type</label>
+          <select id="workout-type" class="form-input" onchange="app.onWorkoutTypeChange()">
+            <option value="Weight Training">Weight Training / Gym</option>
+            <option value="Running">Running / Jogging</option>
+            <option value="Cycling">Cycling / Stationary Bike</option>
+            <option value="HIIT Cardio">HIIT Cardio Circuit</option>
+            <option value="Swimming">Swimming</option>
+            <option value="Yoga / Mobility">Yoga / Mobility</option>
+            <option value="Brisk Walking">Brisk Walking</option>
+            <option value="Pilates">Pilates</option>
+            <option value="Other Sport">Other Sport</option>
+          </select>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="workout-duration">Duration (minutes)</label>
+            <input type="number" id="workout-duration" class="form-input" min="1" max="480" value="45" required
+              oninput="app.estimateWorkoutCalories()" />
+          </div>
+          <div class="form-group">
+            <label for="workout-intensity">Intensity</label>
+            <select id="workout-intensity" class="form-input" onchange="app.estimateWorkoutCalories()">
+              <option value="Light">Light (Easy pace)</option>
+              <option value="Moderate" selected>Moderate (Elevated HR)</option>
+              <option value="Vigorous">Vigorous (High intensity)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="workout-calories">Calories Burned (Estimated)</label>
+          <div class="input-with-adornment">
+            <input type="number" id="workout-calories" class="form-input" min="0" max="4000" value="300" required />
+            <span class="adornment">kcal</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="workout-notes">Session Notes (Optional)</label>
+          <input type="text" id="workout-notes" class="form-input"
+            placeholder="e.g. Chest & Triceps, 4x10 bench press" />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="action-btn secondary-btn" onclick="app.closeWorkoutModal()">Cancel</button>
+          <button type="submit" class="action-btn primary-btn">Save Workout</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. GOALS CONFIGURATION MODAL -->
+  <div id="goals-modal" class="modal-overlay hidden" role="dialog" aria-modal="true"
+    aria-labelledby="goals-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="goals-modal-title">Customize Daily Goals</h3>
+        <button class="modal-close-btn" onclick="app.closeGoalsModal()">&times;</button>
+      </div>
+      <form id="goals-form" onsubmit="event.preventDefault(); app.saveDailyGoals();">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="goal-steps-input">Daily Steps Goal</label>
+            <div class="input-with-adornment">
+              <input type="number" id="goal-steps-input" class="form-input" min="1000" max="60000" step="500"
+                required />
+              <span class="adornment">steps</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="goal-water-input">Daily Water Goal</label>
+            <div class="input-with-adornment">
+              <input type="number" id="goal-water-input" class="form-input" min="500" max="10000" step="250" required />
+              <span class="adornment">ml</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="goal-calories-input">Daily Calorie Target</label>
+            <div class="input-with-adornment">
+              <input type="number" id="goal-calories-input" class="form-input" min="800" max="8000" step="50"
+                required />
+              <span class="adornment">kcal</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="goal-protein-input">Daily Protein Target</label>
+            <div class="input-with-adornment">
+              <input type="number" id="goal-protein-input" class="form-input" min="20" max="400" step="5" required />
+              <span class="adornment">grams</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="goal-workout-input">Daily Workout Target</label>
+          <div class="input-with-adornment">
+            <input type="number" id="goal-workout-input" class="form-input" min="5" max="300" step="5" required />
+            <span class="adornment">minutes</span>
+          </div>
+        </div>
+
+        <!-- BMI Advisor Auto-Fill Presets -->
+        <div class="form-presets">
+          <span class="preset-label">Auto-Fill from BMI Nutrition Advisor:</span>
+          <div class="preset-chips">
+            <button type="button" class="preset-chip" onclick="app.fillGoalsFromAdvisor('loss')">🔻 Weight Loss (Deficit)</button>
+            <button type="button" class="preset-chip" onclick="app.fillGoalsFromAdvisor('maintain')">⚖️ Maintenance (TDEE)</button>
+            <button type="button" class="preset-chip" onclick="app.fillGoalsFromAdvisor('gain')">🔺 Weight Gain (Surplus)</button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="action-btn secondary-btn" onclick="app.closeGoalsModal()">Cancel</button>
+          <button type="submit" class="action-btn primary-btn">Update Goals</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. CUSTOM PROMPT MODAL (FOR STEPS / WATER CUSTOM LOGGING) -->
+  <div id="prompt-modal" class="modal-overlay hidden" role="dialog" aria-modal="true"
+    aria-labelledby="prompt-modal-title">
+    <div class="modal-card small-modal">
+      <div class="modal-header">
+        <h3 id="prompt-modal-title">Log Value</h3>
+        <button class="modal-close-btn" onclick="app.closePromptModal()">&times;</button>
+      </div>
+      <form id="prompt-form" onsubmit="event.preventDefault(); app.confirmPromptModal();">
+        <div class="form-group">
+          <label id="prompt-modal-label" for="prompt-modal-input">Amount</label>
+          <div class="input-with-adornment">
+            <input type="number" id="prompt-modal-input" class="form-input" min="1" step="1" required />
+            <span class="adornment" id="prompt-modal-unit">units</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="action-btn secondary-btn" onclick="app.closePromptModal()">Cancel</button>
+          <button type="submit" class="action-btn primary-btn">Add to Log</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Application Script -->
+  <script src="app.js"></script>
+</body>
+
+</html>
