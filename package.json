@@ -1,0 +1,25 @@
+{
+  "name": "pulsefit-health-tracker",
+  "version": "1.0.0",
+  "description": "Comprehensive Health, Fitness & Nutrition Tracker with BMI Calculator",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve . -l 3000",
+    "dev": "serve . -l 3000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  },
+  "keywords": [
+    "health",
+    "tracker",
+    "steps",
+    "water",
+    "calories",
+    "protein",
+    "workout",
+    "bmi"
+  ],
+  "author": "PulseFit",
+  "license": "MIT"
+}
